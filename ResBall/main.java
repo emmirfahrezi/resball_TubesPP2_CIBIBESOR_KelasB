@@ -3,16 +3,22 @@ package ResBall;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import koneksiDB.koneksiDB;
+import javax.swing.UIManager;
+
+import koneksiDB.KoneksiDB;
+import view.viewPelanggan;
 
 
 public class main {
     public static void main(String[] args) throws SQLException {
-        Connection conn = koneksiDB.configDB();
-        if (conn != null) {
-            System.out.println("KONEKSI DATABASE BERHASIL");
-        } else {
-            System.out.println("KONEKSI DATABASE GAGAL");
-        }
+       // Mengatur tampilan agar terlihat modern
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {}
+
+        // Jalankan View
+        java.awt.EventQueue.invokeLater(() -> {
+            new viewPelanggan().setVisible(true);
+        });
     }
 }
