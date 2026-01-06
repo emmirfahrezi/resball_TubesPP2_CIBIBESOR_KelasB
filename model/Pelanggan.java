@@ -25,5 +25,16 @@ public class Pelanggan {
         ps.setString(3, namaTim);
         ps.executeUpdate();
     }
+
+    // ================= DELETE =================
+    // Method untuk menghapus data pelanggan berdasarkan ID
+    public void deleteById(int id) throws Exception {
+        String sql = "DELETE FROM pelanggan WHERE id_pelanggan = ?";
+        Connection conn = koneksiDB.configDB();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.executeUpdate();
+}
     // ... method update dan delete tetap sama seperti kode sebelumnya
+
 }
