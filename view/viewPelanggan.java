@@ -19,7 +19,7 @@ public class viewPelanggan extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
+          
         // ================= PANEL FORM =================
         JPanel panelForm = new JPanel(new GridLayout(3, 2, 10, 10));
         panelForm.setBorder(BorderFactory.createTitledBorder("Form Pelanggan"));
