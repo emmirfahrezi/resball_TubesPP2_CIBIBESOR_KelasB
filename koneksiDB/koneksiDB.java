@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-public class koneksiDB {
+public class KoneksiDB {
     private static Connection mysqlconfig;
     public static Connection configDB() throws SQLException {
         try {
