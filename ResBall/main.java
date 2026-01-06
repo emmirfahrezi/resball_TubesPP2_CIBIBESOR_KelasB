@@ -1,24 +1,21 @@
 package ResBall;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import javax.swing.UIManager;
-
-import koneksiDB.koneksiDB;
+import controller.controllerPelanggan;
 import view.viewPelanggan;
 
-
 public class main {
-    public static void main(String[] args) throws SQLException {
-       // Mengatur tampilan agar terlihat modern
+    public static void main(String[] args) {
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
-        // Jalankan View
         java.awt.EventQueue.invokeLater(() -> {
-            new viewPelanggan().setVisible(true);
+            viewPelanggan view = new viewPelanggan();
+            new controllerPelanggan(view);
+            view.setVisible(true);
         });
     }
 }
