@@ -41,7 +41,7 @@ public class controllerLapangan {
                 model.insert(nama, jenis, harga, status);
 
                 tampilkanData();
-                resetForm();
+                clearForm();
             } catch (Exception ex) {
                 // isi disini mir untuk validasi
             }
@@ -99,11 +99,10 @@ public class controllerLapangan {
                 });
     }
 
-    private void resetForm() {
     // ================= LOGIC PILIH BARIS =================
     private void pilihBaris() {
         int row = view.getTableLapangan().getSelectedRow();
-        
+
         if (row != -1) {
             // 1. Ambil data dari tabel
             String id = view.getTableLapangan().getValueAt(row, 0).toString();
@@ -117,7 +116,7 @@ public class controllerLapangan {
             view.getTxtNamaLapangan().setText(nama);
             view.getTxtJenisLapangan().setText(jenis);
             view.getTxtHargaSewa().setText(harga);
-            
+
             // Khusus ComboBox Status (String diubah balik jadi Enum biar terpilih)
             try {
                 view.getCbStatus().setSelectedItem(Lapangan.Status.valueOf(status));
@@ -127,7 +126,7 @@ public class controllerLapangan {
             }
         }
     }
-    
+
     public void ubahData() {
         if (view.getTxtId().getText().isEmpty()) {
             JOptionPane.showMessageDialog(view, "Pilih data dulu di tabel!");
