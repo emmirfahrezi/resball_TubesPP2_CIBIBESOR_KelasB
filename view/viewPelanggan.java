@@ -21,7 +21,7 @@ public class viewPelanggan extends JFrame {
         setLayout(new BorderLayout());
 
         // ================= PANEL FORM =================
-        JPanel panelForm = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel panelForm = new JPanel(new GridLayout(3, 2, 10, 10));
         panelForm.setBorder(BorderFactory.createTitledBorder("Form Pelanggan"));
 
         txtId = new JTextField();
@@ -31,8 +31,7 @@ public class viewPelanggan extends JFrame {
         txtNoHp = new JTextField();
         txtTim = new JTextField();
 
-        panelForm.add(new JLabel("ID Pelanggan"));
-        panelForm.add(txtId);
+       
         panelForm.add(new JLabel("Nama"));
         panelForm.add(txtNama);
         panelForm.add(new JLabel("No HP"));
