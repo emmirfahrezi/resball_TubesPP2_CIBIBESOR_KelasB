@@ -49,7 +49,6 @@ public class Pelanggan {
         ps.setInt(1, id);
         ps.executeUpdate();
     }
-}
     
     // ================= UPDATE  =================
     public void update(int id, String nama, String noHp, String namaTim) throws Exception {
