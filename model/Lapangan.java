@@ -22,4 +22,20 @@ public class Lapangan {
         Statement stmt = conn.createStatement();
         return stmt.executeQuery(sql);
     }
+
+    public void update(int id, String nama, String jenis, int harga, String status) throws Exception {
+        // Query SQL buat update data
+        String sql = "UPDATE lapangan SET nama_lapangan=?, jenis=?, harga_per_jam=?, status=? WHERE id_lapangan=?";
+        
+        Connection conn = koneksiDB.configDB();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        
+        ps.setString(1, nama);
+        ps.setString(2, jenis);
+        ps.setInt(3, harga);   // Harga tipe int
+        ps.setString(4, status);
+        ps.setInt(5, id);      // ID buat kondisi WHERE
+        
+        ps.executeUpdate();
+    }
 }
