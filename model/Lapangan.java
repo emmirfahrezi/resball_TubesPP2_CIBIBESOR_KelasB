@@ -52,4 +52,15 @@ public class Lapangan {
 
         ps.executeUpdate();
     }
+
+    // ================= DELETE DATA LAPANGAN =================
+    // >>> TAMBAHAN BARU <<<
+    public void deleteById(int id) throws Exception {
+        String sql = "DELETE FROM lapangan WHERE id_lapangan = ?";
+        Connection conn = koneksiDB.configDB();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.executeUpdate();
+    }
+
 }

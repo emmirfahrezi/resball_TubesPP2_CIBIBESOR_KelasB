@@ -7,8 +7,6 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Lapangan;
 import view.viewLapangan;
-import javax.swing.table.DefaultTableModel;
-import java.sql.ResultSet;
 
 public class controllerLapangan {
     private Lapangan model;
@@ -18,6 +16,9 @@ public class controllerLapangan {
         this.model = new Lapangan();
         this.view = view;
         this.view.getBtnEdit().addActionListener(e -> ubahData());
+
+        this.view.getBtnHapus().addActionListener(e -> hapusData());
+
 
         this.view.getTableLapangan().addMouseListener(new MouseAdapter() {
             @Override
@@ -76,7 +77,7 @@ public class controllerLapangan {
                 .addListSelectionListener(e -> {
 
                     if (e.getValueIsAdjusting())
-                        return; // 🔥 PENTING
+                        return; // 
 
                     int row = view.getTableLapangan().getSelectedRow();
                     if (row != -1) {
@@ -147,6 +148,42 @@ public class controllerLapangan {
             JOptionPane.showMessageDialog(view, "Data Berhasil Diubah!");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage());
+        }
+    }
+
+    // FITUR HAPUS DATA LAPANGAN
+    // =====================================================
+    private void hapusData() {
+        int row = view.getTableLapangan().getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(view, "Pilih data lapangan dulu!");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                view,
+                "Yakin ingin menghapus data lapangan?",
+                "Konfirmasi",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                int id = Integer.parseInt(
+                        view.getTableLapangan()
+                                .getValueAt(row, 0)
+                                .toString()
+                );
+
+                model.deleteById(id);   // <<< INTI FITUR HAPUS
+                tampilkanData();
+                clearForm();
+
+                JOptionPane.showMessageDialog(view, "Data berhasil dihapus!");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(view, "Gagal hapus data!");
+            }
         }
     }
 
