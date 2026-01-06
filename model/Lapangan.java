@@ -32,6 +32,8 @@ public class Lapangan {
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, id);
         return ps.executeQuery();
+
+    }
     // simpan data
     public void insert(String nama, String jenis, int harga, Status status) throws Exception {
         Connection conn = koneksiDB.configDB();
