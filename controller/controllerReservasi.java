@@ -17,11 +17,11 @@ public class controllerReservasi {
     private viewReservasi view;
 
     public controllerReservasi(viewReservasi view) {
+        this.view = view;
         this.modelReservasi = new Reservasi();
         this.modelPelanggan = new Pelanggan();
         this.modelLapangan = new Lapangan();
         this.view.getBtnEdit().addActionListener(e -> ubahData());
-        this.view = view;
 
         // 1. Inisialisasi Data awal
         isiComboPelanggan();
