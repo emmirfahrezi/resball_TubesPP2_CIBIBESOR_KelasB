@@ -23,6 +23,15 @@ public class Lapangan {
         return stmt.executeQuery(sql);
     }
 
+
+    // Tambahkan ini di dalam class Lapangan
+    public ResultSet getById(int id) throws Exception {
+        Connection conn = koneksiDB.configDB();
+        // Mengambil data berdasarkan id_lapangan
+        String sql = "SELECT * FROM lapangan WHERE id_lapangan = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        return ps.executeQuery();
     // simpan data
     public void insert(String nama, String jenis, int harga, Status status) throws Exception {
         Connection conn = koneksiDB.configDB();
