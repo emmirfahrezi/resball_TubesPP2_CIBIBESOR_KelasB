@@ -10,6 +10,12 @@ import view.viewLapangan;
 import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
 
+// validasi
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+
 public class controllerLapangan {
     private Lapangan model;
     private viewLapangan view;
@@ -18,6 +24,7 @@ public class controllerLapangan {
         this.model = new Lapangan();
         this.view = view;
         this.view.getBtnEdit().addActionListener(e -> ubahData());
+        this.view.getBtnClear().addActionListener(e -> clearForm());
 
         this.view.getTableLapangan().addMouseListener(new MouseAdapter() {
             @Override
@@ -26,15 +33,28 @@ public class controllerLapangan {
             }
         });
 
+        setupInputValidation();
+
         isiFormSaatKlikTabel();
 
         tampilkanData();
 
         view.getBtnSimpan().addActionListener(e -> {
+
+            // validasi sebelum simpan
+            if (!validateBeforeSave()) return; // Hentikan proses simpan jika validasi gagal
+            
             try {
                 String nama = view.getTxtNamaLapangan().getText();
                 String jenis = view.getTxtJenisLapangan().getText();
                 int harga = Integer.parseInt(view.getTxtHargaSewa().getText());
+
+                //validasi sttus harus di isi
+                Object statusObj = view.getCbStatus().getSelectedItem();
+                if (statusObj == null) {
+                    JOptionPane.showMessageDialog(view, "Status harus dipilih.");
+                    return;
+                }
 
                 Lapangan.Status status = Lapangan.Status.valueOf(view.getCbStatus().getSelectedItem().toString());
 
@@ -42,8 +62,14 @@ public class controllerLapangan {
 
                 tampilkanData();
                 clearForm();
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(view, "Harga harus berupa angka yang valid.");
+                view.getTxtHargaSewa().requestFocus();
+            } catch (IllegalArgumentException iae) {
+                JOptionPane.showMessageDialog(view, "Status tidak valid.");
+                view.getCbStatus().requestFocus();
             } catch (Exception ex) {
-                // isi disini mir untuk validasi
+                JOptionPane.showMessageDialog(view, "Gagal Simpan: " + ex.getMessage());
             }
         });
     }
@@ -133,6 +159,9 @@ public class controllerLapangan {
             return;
         }
 
+        // Validasi sebelum ubah
+        if (!validateBeforeUpdate()) return; // Hentikan proses ubah jika validasi gagal
+
         try {
             int id = Integer.parseInt(view.getTxtId().getText());
             String nama = view.getTxtNamaLapangan().getText();
@@ -145,6 +174,8 @@ public class controllerLapangan {
             tampilkanData();
             clearForm();
             JOptionPane.showMessageDialog(view, "Data Berhasil Diubah!");
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(view, "ID dan Harga harus berupa angka yang valid.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage());
         }
@@ -155,8 +186,143 @@ public class controllerLapangan {
         view.getTxtNamaLapangan().setText("");
         view.getTxtJenisLapangan().setText("");
         view.getTxtHargaSewa().setText("");
-        view.getCbStatus().setSelectedIndex(0); // TERSEDIA
+        view.getCbStatus().setSelectedIndex(0);
         view.getTableLapangan().clearSelection();
+    }
+
+    private boolean validateCommonFields() {
+        String nama = view.getTxtNamaLapangan().getText().trim();
+        String jenis = view.getTxtJenisLapangan().getText().trim();
+        String hargaTxt = view.getTxtHargaSewa().getText().trim();
+        Object statusObj = view.getCbStatus().getSelectedItem();
+
+        if (nama.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Nama Lapangan tidak boleh kosong.");
+            view.getTxtNamaLapangan().requestFocus();
+            return false;
+        }
+        if (nama.length() < 3 || nama.length() > 50) {
+            JOptionPane.showMessageDialog(view, "Nama Lapangan 3-50 karakter.");
+            view.getTxtNamaLapangan().requestFocus();
+            return false;
+        }
+
+        if (jenis.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Jenis Lapangan tidak boleh kosong.");
+            view.getTxtJenisLapangan().requestFocus();
+            return false;
+        }
+        if (jenis.length() < 3 || jenis.length() > 40) {
+            JOptionPane.showMessageDialog(view, "Jenis Lapangan 3-40 karakter.");
+            view.getTxtJenisLapangan().requestFocus();
+            return false;
+        }
+
+        if (hargaTxt.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Harga Sewa tidak boleh kosong.");
+            view.getTxtHargaSewa().requestFocus();
+            return false;
+        }
+        try {
+            int harga = Integer.parseInt(hargaTxt);
+            if (harga <= 0) {
+                JOptionPane.showMessageDialog(view, "Harga Sewa harus lebih dari 0.");
+                view.getTxtHargaSewa().requestFocus();
+                return false;
+            }
+            if (harga > 100000000) {
+                JOptionPane.showMessageDialog(view, "Harga Sewa terlalu besar.");
+                view.getTxtHargaSewa().requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(view, "Harga Sewa harus berupa angka.");
+            view.getTxtHargaSewa().requestFocus();
+            return false;
+        }
+
+        if (statusObj == null) {
+            JOptionPane.showMessageDialog(view, "Status harus dipilih.");
+            view.getCbStatus().requestFocus();
+            return false;
+        }
+        // Validasi enum
+        try {
+            Lapangan.Status.valueOf(statusObj.toString());
+        } catch (IllegalArgumentException iae) {
+            JOptionPane.showMessageDialog(view, "Status tidak valid.");
+            view.getCbStatus().requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateBeforeSave() {
+        return validateCommonFields();
+    }
+
+    private boolean validateBeforeUpdate() {
+        String idTxt = view.getTxtId().getText().trim();
+        if (idTxt.isEmpty()) {
+            JOptionPane.showMessageDialog(view, "ID tidak boleh kosong saat update.");
+            view.getTxtId().requestFocus();
+            return false;
+        }
+        try {
+            int id = Integer.parseInt(idTxt);
+            if (id <= 0) {
+                JOptionPane.showMessageDialog(view, "ID harus angka positif.");
+                view.getTxtId().requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(view, "ID harus berupa angka.");
+            view.getTxtId().requestFocus();
+            return false;
+        }
+        return validateCommonFields();
+    }
+
+    private void setupInputValidation() {
+        // Batasi Harga Sewa hanya angka dengan panjang maksimal 9 digit
+        try {
+            AbstractDocument docHarga = (AbstractDocument) view.getTxtHargaSewa().getDocument();
+            docHarga.setDocumentFilter(new NumericFilter(9));
+        } catch (Exception ignored) {}
+    }
+
+    // Filter dokumen untuk angka saja
+    private static class NumericFilter extends DocumentFilter {
+        private final int maxLen;
+        NumericFilter(int maxLen) { this.maxLen = maxLen; }
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                throws BadLocationException {
+            if (string == null) return;
+            String filtered = string.replaceAll("\\D", "");
+            if (filtered.isEmpty()) return;
+
+            int newLen = fb.getDocument().getLength() + filtered.length();
+            if (newLen <= maxLen) {
+                super.insertString(fb, offset, filtered, attr);
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                throws BadLocationException {
+            if (text == null) return;
+            String filtered = text.replaceAll("\\D", "");
+            int currentLen = fb.getDocument().getLength();
+            int newLen = currentLen - length + filtered.length();
+            if (filtered.isEmpty() && length > 0) {
+                super.replace(fb, offset, length, "", attrs);
+            } else if (newLen <= maxLen) {
+                super.replace(fb, offset, length, filtered, attrs);
+            }
+        }
     }
 
 }

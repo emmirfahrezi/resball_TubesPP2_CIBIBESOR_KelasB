@@ -21,6 +21,7 @@ public class controllerPelanggan {
         this.view.getBtnClear().addActionListener(e -> clearForm());
         this.view.getBtnHapus().addActionListener(e -> hapusData());
         this.view.getBtnEdit().addActionListener(e -> ubahData());
+        this.view.getBtnClear().addActionListener(e -> clearForm());
 
         this.view.getTablePelanggan().addMouseListener(new MouseAdapter() {
             @Override
@@ -69,6 +70,14 @@ public class controllerPelanggan {
 
     // Mengambil input dari View dan mengirim ke Model
     public void simpanData() {
+         // Validasi: Cek apakah nama, no_hp, dan tim kosong
+         if (view.getTxtNama().getText().isEmpty() || 
+             view.getTxtNoHp().getText().isEmpty() || 
+             view.getTxtTim().getText().isEmpty()) {
+                JOptionPane.showMessageDialog(view, "Semua field harus diisi!");
+             return;
+        }
+
         try {
             model.insert(
                     view.getTxtNama().getText(),
@@ -89,6 +98,14 @@ public class controllerPelanggan {
             JOptionPane.showMessageDialog(view, "Pilih data di tabel dulu yang mau diedit!");
             return;
         }
+
+        // Validasi: Cek apakah nama, no_hp, dan tim kosong
+         if (view.getTxtNama().getText().isEmpty() || 
+            view.getTxtNoHp().getText().isEmpty() || 
+            view.getTxtTim().getText().isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Semua field harus diisi!");
+            return;
+      }
 
         try {
             // Ambil ID dari textfield yang hidden/disable
