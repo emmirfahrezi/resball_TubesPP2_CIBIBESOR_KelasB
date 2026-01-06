@@ -1,11 +1,12 @@
 package controller;
 
-import model.Pelanggan;
-import view.viewPelanggan;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.ResultSet;
+import model.Pelanggan;
+import view.viewPelanggan;
 
 public class controllerPelanggan {
     private Pelanggan model;
@@ -19,6 +20,14 @@ public class controllerPelanggan {
         this.view.getBtnSimpan().addActionListener(e -> simpanData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
         this.view.getBtnHapus().addActionListener(e -> hapusData());
+        this.view.getBtnEdit().addActionListener(e -> ubahData());
+
+        this.view.getTablePelanggan().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                pilihBaris(); // Panggil fungsi pilihBaris di bawah
+            }
+        });
 
         tampilkanData();
     }
@@ -46,6 +55,18 @@ public class controllerPelanggan {
         }
     }
 
+    private void pilihBaris() {
+        int row = view.getTablePelanggan().getSelectedRow();
+        
+        if (row != -1) {
+            // Ambil data dari tabel, masukin ke textfield
+            view.getTxtId().setText(view.getTablePelanggan().getValueAt(row, 1).toString());
+            view.getTxtNama().setText(view.getTablePelanggan().getValueAt(row, 2).toString());
+            view.getTxtNoHp().setText(view.getTablePelanggan().getValueAt(row, 3).toString());
+            view.getTxtTim().setText(view.getTablePelanggan().getValueAt(row, 4).toString());
+        }
+    }
+
     // Mengambil input dari View dan mengirim ke Model
     public void simpanData() {
         try {
@@ -58,6 +79,33 @@ public class controllerPelanggan {
             clearForm();
         } catch (Exception e) {
             System.out.println("Gagal Simpan: " + e.getMessage());
+        }
+    }
+
+    // ================= LOGIC UBAH / UPDATE =================
+    public void ubahData() {
+        // Validasi: Cek apakah ID kosong (artinya belum klik tabel)
+        if (view.getTxtId().getText().isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Pilih data di tabel dulu yang mau diedit!");
+            return;
+        }
+
+        try {
+            // Ambil ID dari textfield yang hidden/disable
+            int id = Integer.parseInt(view.getTxtId().getText());
+
+            // Panggil Model Update
+            model.update(
+                id,
+                view.getTxtNama().getText(),
+                view.getTxtNoHp().getText(),
+                view.getTxtTim().getText()
+            );
+
+            tampilkanData(); // Refresh tabel
+            clearForm();     // Bersihkan form
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage());
         }
     }
 
