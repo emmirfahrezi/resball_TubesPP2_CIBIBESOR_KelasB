@@ -1,12 +1,12 @@
 package controller;
 
-import model.Reservasi;
-import model.Pelanggan;
-import model.Lapangan;
-import view.viewReservasi;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.Lapangan;
+import model.Pelanggan;
+import model.Reservasi;
+import view.viewReservasi;
 
 public class controllerReservasi {
     private Reservasi modelReservasi;
@@ -18,6 +18,7 @@ public class controllerReservasi {
         this.modelReservasi = new Reservasi();
         this.modelPelanggan = new Pelanggan();
         this.modelLapangan = new Lapangan();
+        this.view.getBtnEdit().addActionListener(e -> ubahData());
         this.view = view;
 
         // 1. Inisialisasi Data awal
@@ -138,6 +139,33 @@ public class controllerReservasi {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Gagal Simpan: " + e.getMessage());
+        }
+    }
+
+    // ================= LOGIC TOMBOL EDIT =================
+    private void ubahData() {
+        try {
+            // 1. Ambil ID Reservasi (Primary Key buat WHERE)
+            int idRes = Integer.parseInt(view.getTxtIdReservasi().getText());
+            
+            // 2. Ambil ID Pelanggan & Lapangan dari ComboBox (Split "1 - Nama")
+            int idPel = Integer.parseInt(view.getCbPelanggan().getSelectedItem().toString().split(" - ")[0]);
+            int idLap = Integer.parseInt(view.getCbLapangan().getSelectedItem().toString().split(" - ")[0]);
+
+            // 3. Ambil data teks lainnya
+            String tgl = view.getTxtTanggal().getText();
+            String mulai = view.getTxtJamMulai().getText();
+            String selesai = view.getTxtJamSelesai().getText();
+            int total = Integer.parseInt(view.getTxtTotalBayar().getText());
+
+            // 4. Panggil Model Update
+            if (modelReservasi.update(idRes, idPel, idLap, tgl, mulai, selesai, total)) {
+                javax.swing.JOptionPane.showMessageDialog(view, "Data Berhasil Diupdate!");
+                tampilkanDataTabel(); // Refresh tabel
+                clearForm();          // Bersihkan form
+            }
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(view, "Gagal Edit: " + e.getMessage());
         }
     }
 
