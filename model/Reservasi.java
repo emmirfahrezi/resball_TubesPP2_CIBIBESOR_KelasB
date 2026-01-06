@@ -35,9 +35,10 @@ public class Reservasi {
         return pstmt.executeUpdate() > 0;
     }
 
-    public boolean update(int idRes, int idPel, int idLap, String tgl, String mulai, String selesai, int total) throws SQLException {
+    public boolean update(int idRes, int idPel, int idLap, String tgl, String mulai, String selesai, int total)
+            throws SQLException {
         conn = koneksiDB.configDB();
-        String sql = "UPDATE reservasi SET id_pelanggan=?, id_lapangan=?, tanggal=?, jam_mulai=?, jam_selesai=?, total_bayar=? WHERE id_reservasi=?";
+        String sql = "UPDATE reservasi SET id_pelanggan=?, id_lapangan=?, tanggal=?, jam_mulai=?, jam_selesai=?, total_bayar=? WHERE id_booking=?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, idPel);
         pstmt.setInt(2, idLap);

@@ -33,6 +33,13 @@ public class controllerReservasi {
         this.view.getBtnSimpan().addActionListener(e -> simpanData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
 
+        this.view.getTableReservasi().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                pilihBaris(); // <--- Panggil function di atas
+            }
+        });
+
         // ================= [DIUBAH] HITUNG OTOMATIS =================
         this.view.getTxtJamSelesai().addFocusListener(
                 new java.awt.event.FocusAdapter() {
@@ -182,7 +189,7 @@ public class controllerReservasi {
         try {
             // 1. Ambil ID Reservasi (Primary Key buat WHERE)
             int idRes = Integer.parseInt(view.getTxtIdReservasi().getText());
-            
+
             // 2. Ambil ID Pelanggan & Lapangan dari ComboBox (Split "1 - Nama")
             int idPel = Integer.parseInt(view.getCbPelanggan().getSelectedItem().toString().split(" - ")[0]);
             int idLap = Integer.parseInt(view.getCbLapangan().getSelectedItem().toString().split(" - ")[0]);
@@ -197,7 +204,7 @@ public class controllerReservasi {
             if (modelReservasi.update(idRes, idPel, idLap, tgl, mulai, selesai, total)) {
                 javax.swing.JOptionPane.showMessageDialog(view, "Data Berhasil Diupdate!");
                 tampilkanDataTabel(); // Refresh tabel
-                clearForm();          // Bersihkan form
+                clearForm(); // Bersihkan form
             }
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(view, "Gagal Edit: " + e.getMessage());
@@ -207,7 +214,7 @@ public class controllerReservasi {
     // ================= LOGIC PILIH BARIS (DARI TABEL KE FORM) =================
     private void pilihBaris() {
         int row = view.getTableReservasi().getSelectedRow();
-        
+
         if (row != -1) {
             // 1. Ambil data mentah dari tabel
             String idRes = view.getTableReservasi().getValueAt(row, 0).toString();
