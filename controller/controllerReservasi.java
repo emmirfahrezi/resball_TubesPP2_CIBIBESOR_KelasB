@@ -1,5 +1,7 @@
 package controller;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -29,6 +31,13 @@ public class controllerReservasi {
         // 2. Listener untuk Tombol
         this.view.getBtnSimpan().addActionListener(e -> simpanData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
+
+        this.view.getTableReservasi().addMouseListener(new MouseAdapter() {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        pilihBaris(); // <--- Panggil function di atas
+    }
+});
 
         // 3. Listener Perhitungan Otomatis
         // Menghitung saat jam selesai diisi (Focus Lost)
@@ -166,6 +175,48 @@ public class controllerReservasi {
             }
         } catch (Exception e) {
             javax.swing.JOptionPane.showMessageDialog(view, "Gagal Edit: " + e.getMessage());
+        }
+    }
+
+    // ================= LOGIC PILIH BARIS (DARI TABEL KE FORM) =================
+    private void pilihBaris() {
+        int row = view.getTableReservasi().getSelectedRow();
+        
+        if (row != -1) {
+            // 1. Ambil data mentah dari tabel
+            String idRes = view.getTableReservasi().getValueAt(row, 0).toString();
+            String namaPel = view.getTableReservasi().getValueAt(row, 1).toString(); // Cuma Nama
+            String namaLap = view.getTableReservasi().getValueAt(row, 2).toString(); // Cuma Nama
+            String tgl = view.getTableReservasi().getValueAt(row, 3).toString();
+            String mulai = view.getTableReservasi().getValueAt(row, 4).toString();
+            String selesai = view.getTableReservasi().getValueAt(row, 5).toString();
+            String total = view.getTableReservasi().getValueAt(row, 6).toString();
+
+            // 2. Masukin ke Textfield biasa
+            view.getTxtIdReservasi().setText(idRes);
+            view.getTxtTanggal().setText(tgl);
+            view.getTxtJamMulai().setText(mulai);
+            view.getTxtJamSelesai().setText(selesai);
+            view.getTxtTotalBayar().setText(total);
+
+            // 3. Logic Milih ComboBox Pelanggan
+            // Kita cari item di ComboBox yang mengandung nama dari tabel
+            for (int i = 0; i < view.getCbPelanggan().getItemCount(); i++) {
+                String item = view.getCbPelanggan().getItemAt(i).toString();
+                if (item.contains(namaPel)) {
+                    view.getCbPelanggan().setSelectedIndex(i);
+                    break;
+                }
+            }
+
+            // 4. Logic Milih ComboBox Lapangan
+            for (int i = 0; i < view.getCbLapangan().getItemCount(); i++) {
+                String item = view.getCbLapangan().getItemAt(i).toString();
+                if (item.contains(namaLap)) {
+                    view.getCbLapangan().setSelectedIndex(i);
+                    break;
+                }
+            }
         }
     }
 
