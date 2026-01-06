@@ -151,8 +151,8 @@ public class controllerLapangan {
         }
     }
 
-    // FITUR HAPUS DATA LAPANGAN
-    // =====================================================
+    // <-- FITUR HAPUS DATA LAPANGAN -->
+
     private void hapusData() {
         int row = view.getTableLapangan().getSelectedRow();
 
