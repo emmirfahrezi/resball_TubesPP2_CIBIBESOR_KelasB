@@ -2,6 +2,8 @@ package controller;
 
 import model.Pelanggan;
 import view.viewPelanggan;
+
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
 
@@ -16,6 +18,7 @@ public class controllerPelanggan {
         // event
         this.view.getBtnSimpan().addActionListener(e -> simpanData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
+        this.view.getBtnHapus().addActionListener(e -> hapusData());
 
         tampilkanData();
     }
@@ -55,6 +58,35 @@ public class controllerPelanggan {
             clearForm();
         } catch (Exception e) {
             System.out.println("Gagal Simpan: " + e.getMessage());
+        }
+    }
+
+    private void hapusData() {
+        int row = view.getTablePelanggan().getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(view, "Pilih data dulu!");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+            view,
+            "Yakin hapus data?",
+            "Konfirmasi",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            int id = Integer.parseInt(
+                view.getTablePelanggan().getValueAt(row, 1).toString()
+            );
+
+            try {
+                model.deleteById(id);
+                tampilkanData();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(view, "Gagal hapus data");
+            }
         }
     }
 
