@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import javax.swing.UIManager;
 
-import koneksiDB.KoneksiDB;
+import koneksiDB.koneksiDB;
 import view.viewPelanggan;
 
 
