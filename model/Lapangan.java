@@ -15,7 +15,7 @@ public class Lapangan {
     }
 
     // ================= GET ALL =================
-    // Method untuk mengambil semua data lapangan  
+    // Method untuk mengambil semua data lapangan
     public ResultSet getAll() throws Exception {
         Connection conn = koneksiDB.configDB();
         String sql = "SELECT * FROM lapangan ORDER BY id_lapangan ASC";
@@ -32,5 +32,33 @@ public class Lapangan {
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, id);
         return ps.executeQuery();
+    // simpan data
+    public void insert(String nama, String jenis, int harga, Status status) throws Exception {
+        Connection conn = koneksiDB.configDB();
+
+        String sql = "INSERT INTO lapangan (nama_lapangan, jenis, harga_per_jam, status) VALUES (?, ?, ?, ?)";
+
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setString(1, nama);
+        pst.setString(2, jenis);
+        pst.setInt(3, harga);
+        pst.setString(4, status.name()); // ENUM → STRING
+        pst.executeUpdate();
+    }
+
+    public void update(int id, String nama, String jenis, int harga, String status) throws Exception {
+        // Query SQL buat update data
+        String sql = "UPDATE lapangan SET nama_lapangan=?, jenis=?, harga_per_jam=?, status=? WHERE id_lapangan=?";
+
+        Connection conn = koneksiDB.configDB();
+        PreparedStatement ps = conn.prepareStatement(sql);
+
+        ps.setString(1, nama);
+        ps.setString(2, jenis);
+        ps.setInt(3, harga); // Harga tipe int
+        ps.setString(4, status);
+        ps.setInt(5, id); // ID buat kondisi WHERE
+
+        ps.executeUpdate();
     }
 }

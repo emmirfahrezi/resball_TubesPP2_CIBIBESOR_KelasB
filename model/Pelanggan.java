@@ -49,5 +49,19 @@ public class Pelanggan {
         ps.setInt(1, id);
         ps.executeUpdate();
     }
+}
+    
+    // ================= UPDATE  =================
+    public void update(int id, String nama, String noHp, String namaTim) throws Exception {
+        String sql = "UPDATE pelanggan SET nama=?, no_hp=?, nama_tim=? WHERE id_pelanggan=?";
+        Connection conn = koneksiDB.configDB();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, nama);
+        ps.setString(2, noHp);
+        ps.setString(3, namaTim);
+        ps.setInt(4, id);
+        ps.executeUpdate();
+    }
+    // ... method update dan delete tetap sama seperti kode sebelumnya
 
 }
