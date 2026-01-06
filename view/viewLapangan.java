@@ -2,17 +2,19 @@ package view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import model.Lapangan;
+
 import java.awt.*;
-import model.Lapangan; // Import class Lapangan agar bisa mengakses Enum Status
 
 public class viewLapangan extends JFrame {
     // ================= KOMPONEN =================
     private JTable tableLapangan;
     private JTextField txtId, txtNamaLapangan, txtJenisLapangan, txtHargaSewa, txtCari;
-    
-    // 1. UBAH: dari JTextField ke JComboBox dengan tipe Enum Status
-    private JComboBox<Lapangan.Status> cbStatus; 
-    
+
+    // view hanya string
+    private JComboBox<String> cbStatus;
+
     private JButton btnSimpan, btnEdit, btnHapus, btnClear, btnCari;
     private DefaultTableModel tableModel;
 
@@ -33,21 +35,24 @@ public class viewLapangan extends JFrame {
         txtNamaLapangan = new JTextField();
         txtJenisLapangan = new JTextField();
         txtHargaSewa = new JTextField();
-        
-        // 2. INISIALISASI: JComboBox menggunakan nilai dari Enum Lapangan.Status
-        cbStatus = new JComboBox<>(Lapangan.Status.values());
 
-        panelForm.add(new JLabel("Nama Lapangan")); 
+        //
+        cbStatus = new JComboBox<>(new String[] {
+                "TERSEDIA",
+                "TIDAK TERSEDIA"
+        });
+
+        panelForm.add(new JLabel("Nama Lapangan"));
         panelForm.add(txtNamaLapangan);
         panelForm.add(new JLabel("Jenis Lapangan"));
         panelForm.add(txtJenisLapangan);
         panelForm.add(new JLabel("Harga Sewa"));
         panelForm.add(txtHargaSewa);
         panelForm.add(new JLabel("Status"));
-        
+
         // 3. UBAH: Masukkan cbStatus ke dalam panel
-        panelForm.add(cbStatus); 
-        
+        panelForm.add(cbStatus);
+
         add(panelForm, BorderLayout.NORTH);
 
         // ================= PANEL TOMBOL =================
@@ -82,29 +87,66 @@ public class viewLapangan extends JFrame {
         add(panelAtas, BorderLayout.NORTH);
 
         // ================= TABEL =================
-        String[] columnNames = {"ID", "Nama Lapangan", "Jenis Lapangan", "Harga Sewa", "Status"};
-        tableModel = new DefaultTableModel(columnNames, 0);
+        String[] columnNames = { "ID", "Nama Lapangan", "Jenis Lapangan", "Harga Sewa", "Status" };
+        // table gabisa diedit langsung
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // tabel tidak bisa diedit langsung
+            }
+        };
         tableLapangan = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(tableLapangan);
         add(scrollPane, BorderLayout.CENTER);
     }
 
     // ================= GETTER =================
-    public JTable getTableLapangan() { return tableLapangan; }
-    public JTextField getTxtId() { return txtId; }
-    public JTextField getTxtNamaLapangan() { return txtNamaLapangan; }
-    public JTextField getTxtJenisLapangan() { return txtJenisLapangan; }
-    public JTextField getTxtHargaSewa() { return txtHargaSewa; }
+    public JTable getTableLapangan() {
+        return tableLapangan;
+    }
 
-    // 4. UBAH: Getter untuk JComboBox Status
-    public JComboBox<Lapangan.Status> getCbStatus() {
+    public JTextField getTxtId() {
+        return txtId;
+    }
+
+    public JTextField getTxtNamaLapangan() {
+        return txtNamaLapangan;
+    }
+
+    public JTextField getTxtJenisLapangan() {
+        return txtJenisLapangan;
+    }
+
+    public JTextField getTxtHargaSewa() {
+        return txtHargaSewa;
+    }
+
+    //
+    public JComboBox<String> getCbStatus() {
         return cbStatus;
     }
 
-    public JTextField getTxtCari() { return txtCari; }
-    public JButton getBtnSimpan() { return btnSimpan; }
-    public JButton getBtnEdit() { return btnEdit; }
-    public JButton getBtnHapus() { return btnHapus; }
-    public JButton getBtnClear() { return btnClear; }
-    public JButton getBtnCari() { return btnCari; }
+    public JTextField getTxtCari() {
+        return txtCari;
+    }
+
+    public JButton getBtnSimpan() {
+        return btnSimpan;
+    }
+
+    public JButton getBtnEdit() {
+        return btnEdit;
+    }
+
+    public JButton getBtnHapus() {
+        return btnHapus;
+    }
+
+    public JButton getBtnClear() {
+        return btnClear;
+    }
+
+    public JButton getBtnCari() {
+        return btnCari;
+    }
 }
