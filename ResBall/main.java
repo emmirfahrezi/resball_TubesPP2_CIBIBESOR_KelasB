@@ -1,7 +1,11 @@
 package ResBall;
 
 import javax.swing.UIManager;
+import javax.swing.text.View;
+
+import controller.controllerLapangan;
 import controller.controllerPelanggan;
+import view.viewLapangan;
 import view.viewPelanggan;
 
 public class main {
@@ -16,6 +20,12 @@ public class main {
             viewPelanggan view = new viewPelanggan();
             new controllerPelanggan(view);
             view.setVisible(true);
+            
+            // Menampilkan View Lapangan
+            viewLapangan vLapangan = new viewLapangan(); // Pastikan nama kelasnya sesuai
+            new controllerLapangan(vLapangan);           // Pastikan controllernya juga ada
+            vLapangan.setVisible(true);
         });
+
     }
 }
