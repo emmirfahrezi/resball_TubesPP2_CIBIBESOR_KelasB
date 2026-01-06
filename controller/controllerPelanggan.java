@@ -7,6 +7,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.Pelanggan;
 import view.viewPelanggan;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.*;
+
+import java.io.FileOutputStream;
+
 
 public class controllerPelanggan {
     private Pelanggan model;
@@ -22,6 +27,8 @@ public class controllerPelanggan {
         this.view.getBtnHapus().addActionListener(e -> hapusData());
         this.view.getBtnEdit().addActionListener(e -> ubahData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
+        this.view.getBtnPdf().addActionListener(e -> cetakPdf());
+
 
         this.view.getTablePelanggan().addMouseListener(new MouseAdapter() {
             @Override
@@ -67,6 +74,7 @@ public class controllerPelanggan {
             view.getTxtTim().setText(view.getTablePelanggan().getValueAt(row, 4).toString());
         }
     }
+    
 
     // Mengambil input dari View dan mengirim ke Model
     public void simpanData() {
@@ -161,4 +169,56 @@ public class controllerPelanggan {
         view.getTxtNoHp().setText("");
         view.getTxtTim().setText("");
     }
+
+    private void cetakPdf() {
+        try {
+            Document document = new Document();
+            FileOutputStream fos = new FileOutputStream("Laporan_Pelanggan.pdf");
+            PdfWriter.getInstance(document, fos);
+            document.open();
+
+            // Add title
+            Paragraph title = new Paragraph("Laporan Data Pelanggan");
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+            document.add(new Paragraph(" "));
+
+            // Create table
+            PdfPTable table = new PdfPTable(5);
+            table.addCell("No");
+            table.addCell("ID Pelanggan");
+            table.addCell("Nama");
+            table.addCell("No HP");
+            table.addCell("Nama Tim");
+
+            // Add data from table
+            DefaultTableModel tbl = (DefaultTableModel) view.getTablePelanggan().getModel();
+            for (int i = 0; i < tbl.getRowCount(); i++) {
+                table.addCell(tbl.getValueAt(i, 0).toString());
+                table.addCell(tbl.getValueAt(i, 1).toString());
+                table.addCell(tbl.getValueAt(i, 2).toString());
+                table.addCell(tbl.getValueAt(i, 3).toString());
+                table.addCell(tbl.getValueAt(i, 4).toString());
+            }
+
+            document.add(table);
+            document.close();
+            fos.close();
+
+            JOptionPane.showMessageDialog(view, "PDF berhasil dibuat: Laporan_Pelanggan.pdf");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Gagal membuat PDF: " + e.getMessage());
+        }
+    }
+
+    private void addCellHeader(PdfPTable table, String text) {
+    Font font = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+    PdfPCell cell = new PdfPCell(new Phrase(text, font));
+    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+    table.addCell(cell);
+}
+
+
+    
 }
