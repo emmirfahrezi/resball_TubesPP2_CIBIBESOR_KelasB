@@ -12,6 +12,8 @@ public class viewPelanggan extends JFrame {
     private JButton btnSimpan, btnEdit, btnHapus, btnClear, btnCari;
     private JTable tablePelanggan;
     private DefaultTableModel tableModel;
+    private JButton btnPdf;
+
 
     public viewPelanggan() {
         setTitle("Data Pelanggan - Aplikasi Sewa Lapangan");
@@ -46,11 +48,14 @@ public class viewPelanggan extends JFrame {
         btnEdit = new JButton("Edit");
         btnHapus = new JButton("Hapus");
         btnClear = new JButton("Clear");
+        btnPdf = new JButton("Cetak PDF");
+
 
         panelTombol.add(btnSimpan);
         panelTombol.add(btnEdit);
         panelTombol.add(btnHapus);
         panelTombol.add(btnClear);
+        panelTombol.add(btnPdf);
 
         // ================= PANEL CARI =================
         JPanel panelCari = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -130,4 +135,9 @@ public class viewPelanggan extends JFrame {
     public DefaultTableModel getTableModel() {
         return tableModel;
     }
+
+    public JButton getBtnPdf() {
+        return btnPdf;
+    }
+
 }
