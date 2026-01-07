@@ -49,4 +49,12 @@ public class Reservasi {
         pstmt.setInt(7, idRes); // Where ID Reservasi
         return pstmt.executeUpdate() > 0;
     }
+
+    public boolean deleteById(int idRes) throws SQLException {
+        Connection conn = koneksiDB.configDB();
+        String sql = "DELETE FROM reservasi WHERE id_booking = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, idRes);
+        return ps.executeUpdate() > 0;
+    }
 }
