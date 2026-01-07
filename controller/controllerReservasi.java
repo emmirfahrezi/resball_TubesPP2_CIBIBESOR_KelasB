@@ -33,6 +33,9 @@ public class controllerReservasi {
         this.view.getBtnSimpan().addActionListener(e -> simpanData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
 
+        // Acttion Listener Hapus
+        this.view.getBtnHapus().addActionListener(e -> hapusData());
+
         this.view.getTableReservasi().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -136,8 +139,8 @@ public class controllerReservasi {
             ResultSet rs = modelReservasi.getAll();
             while (rs.next()) {
                 tbl.addRow(new Object[] {
-                        rs.getInt("id_booking"), // 🔥 BUKAN id_reservasi
-                        rs.getString("nama_pelanggan"), // 🔥 ALIAS
+                        rs.getInt("id_booking"),
+                        rs.getString("nama_pelanggan"), 
                         rs.getString("nama_lapangan"),
                         rs.getDate("tanggal"),
                         rs.getTime("jam_mulai"),
@@ -249,6 +252,38 @@ public class controllerReservasi {
                     view.getCbLapangan().setSelectedIndex(i);
                     break;
                 }
+            }
+        }
+    }
+
+    // LOGIC HAPUS DATA RESERVASI
+    private void hapusData() {
+        int row = view.getTableReservasi().getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(view, "Pilih data reservasi dulu!");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                view,
+                "Yakin ingin menghapus reservasi?",
+                "Konfirmasi",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                int idRes = Integer.parseInt(
+                        view.getTableReservasi().getValueAt(row, 0).toString());
+
+                modelReservasi.deleteById(idRes); // <<< INTI FITUR HAPUS
+                tampilkanDataTabel();
+                clearForm();
+
+                JOptionPane.showMessageDialog(view, "Data berhasil dihapus!");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(view, "Gagal hapus data!");
             }
         }
     }
