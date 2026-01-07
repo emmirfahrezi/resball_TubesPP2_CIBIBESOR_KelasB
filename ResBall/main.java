@@ -22,17 +22,17 @@ public class main {
             viewPelanggan view = new viewPelanggan();
             new controllerPelanggan(view);
             view.setVisible(true);
-            
+
             // Menampilkan View Lapangan
             viewLapangan vLapangan = new viewLapangan(); // Pastikan nama kelasnya sesuai
-            new controllerLapangan(vLapangan);           // Pastikan controllernya juga ada
+            new controllerLapangan(vLapangan); // Pastikan controllernya juga ada
             vLapangan.setVisible(true);
 
             // menampilkan View Reservasi
             viewReservasi vReservasi = new viewReservasi();
-            new controllerReservasi(vReservasi); 
+            new controllerReservasi(vReservasi);
             vReservasi.setVisible(true);
-            
+
         });
 
     }
