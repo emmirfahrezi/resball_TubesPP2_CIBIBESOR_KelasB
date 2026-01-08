@@ -9,6 +9,12 @@ import model.Lapangan;
 import model.Pelanggan;
 import model.Reservasi;
 import view.viewReservasi;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 public class controllerReservasi {
 
@@ -32,6 +38,9 @@ public class controllerReservasi {
         // ================= [TETAP] BUTTON =================
         this.view.getBtnSimpan().addActionListener(e -> simpanData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
+        if (this.view.getBtnPdf() != null) {
+            this.view.getBtnPdf().addActionListener(e -> cetakPdf());
+        }
 
         // Acttion Listener Hapus
         this.view.getBtnHapus().addActionListener(e -> hapusData());
@@ -293,5 +302,48 @@ public class controllerReservasi {
         view.getTxtJamMulai().setText("HH:mm");
         view.getTxtJamSelesai().setText("HH:mm");
         view.getTxtTotalBayar().setText("");
+    }
+
+    // ================= CETAK PDF =================
+    private void cetakPdf() {
+        try {
+            Document document = new Document();
+            FileOutputStream fos = new FileOutputStream("Laporan_Reservasi.pdf");
+            PdfWriter.getInstance(document, fos);
+            document.open();
+
+            Paragraph title = new Paragraph("Laporan Data Reservasi");
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+            document.add(new Paragraph(" "));
+
+            PdfPTable table = new PdfPTable(7);
+            table.addCell("Id Res");
+            table.addCell("Pelanggan");
+            table.addCell("Lapangan");
+            table.addCell("Tanggal");
+            table.addCell("Mulai");
+            table.addCell("Selesai");
+            table.addCell("Total");
+
+            DefaultTableModel tbl = (DefaultTableModel) view.getTableReservasi().getModel();
+            for (int i = 0; i < tbl.getRowCount(); i++) {
+                table.addCell(String.valueOf(tbl.getValueAt(i, 0)));
+                table.addCell(String.valueOf(tbl.getValueAt(i, 1)));
+                table.addCell(String.valueOf(tbl.getValueAt(i, 2)));
+                table.addCell(String.valueOf(tbl.getValueAt(i, 3)));
+                table.addCell(String.valueOf(tbl.getValueAt(i, 4)));
+                table.addCell(String.valueOf(tbl.getValueAt(i, 5)));
+                table.addCell(String.valueOf(tbl.getValueAt(i, 6)));
+            }
+
+            document.add(table);
+            document.close();
+            fos.close();
+
+            JOptionPane.showMessageDialog(view, "PDF berhasil dibuat: Laporan_Reservasi.pdf");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Gagal membuat PDF: " + e.getMessage());
+        }
     }
 }

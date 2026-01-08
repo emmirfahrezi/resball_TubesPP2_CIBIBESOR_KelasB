@@ -11,7 +11,7 @@ public class viewReservasi extends JFrame {
     private JTextField txtIdReservasi, txtIdPelanggan, txtIdLapangan, txtTanggal, txtJamMulai, txtJamSelesai, txtTotalBayar, txtCari;
 
     private JComboBox<String> cbPelanggan, cbLapangan;
-    private JButton btnSimpan, btnEdit, btnHapus, btnClear, btnCari;
+    private JButton btnSimpan, btnEdit, btnHapus, btnClear, btnCari, btnPdf;
     private DefaultTableModel tableModel;
     
     public viewReservasi() {
@@ -52,11 +52,13 @@ public class viewReservasi extends JFrame {
         btnEdit = new JButton("Edit");
         btnHapus = new JButton("Hapus");
         btnClear = new JButton("Clear");
+        btnPdf = new JButton("Cetak PDF");
 
         panelTombol.add(btnSimpan);
         panelTombol.add(btnEdit);
         panelTombol.add(btnHapus);
         panelTombol.add(btnClear);
+        panelTombol.add(btnPdf);
 
         // ================= PANEL CARI =================
         JPanel panelCari = new JPanel(new FlowLayout(FlowLayout.LEFT)); 
@@ -105,4 +107,5 @@ public class viewReservasi extends JFrame {
     public JButton getBtnHapus() { return btnHapus; }
     public JButton getBtnClear() { return btnClear; }
     public JButton getBtnCari() { return btnCari; }
+    public JButton getBtnPdf() { return btnPdf; }
 }
