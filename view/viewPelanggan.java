@@ -12,6 +12,8 @@ public class viewPelanggan extends JFrame {
     private JButton btnSimpan, btnEdit, btnHapus, btnClear, btnCari;
     private JTable tablePelanggan;
     private DefaultTableModel tableModel;
+    private JButton btnPdf;
+
 
     public viewPelanggan() {
         setTitle("Data Pelanggan - Aplikasi Sewa Lapangan");
@@ -19,9 +21,9 @@ public class viewPelanggan extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
+          
         // ================= PANEL FORM =================
-        JPanel panelForm = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel panelForm = new JPanel(new GridLayout(3, 2, 10, 10));
         panelForm.setBorder(BorderFactory.createTitledBorder("Form Pelanggan"));
 
         txtId = new JTextField();
@@ -31,8 +33,7 @@ public class viewPelanggan extends JFrame {
         txtNoHp = new JTextField();
         txtTim = new JTextField();
 
-        panelForm.add(new JLabel("ID Pelanggan"));
-        panelForm.add(txtId);
+       
         panelForm.add(new JLabel("Nama"));
         panelForm.add(txtNama);
         panelForm.add(new JLabel("No HP"));
@@ -47,11 +48,14 @@ public class viewPelanggan extends JFrame {
         btnEdit = new JButton("Edit");
         btnHapus = new JButton("Hapus");
         btnClear = new JButton("Clear");
+        btnPdf = new JButton("Cetak PDF");
+
 
         panelTombol.add(btnSimpan);
         panelTombol.add(btnEdit);
         panelTombol.add(btnHapus);
         panelTombol.add(btnClear);
+        panelTombol.add(btnPdf);
 
         // ================= PANEL CARI =================
         JPanel panelCari = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -131,4 +135,9 @@ public class viewPelanggan extends JFrame {
     public DefaultTableModel getTableModel() {
         return tableModel;
     }
+
+    public JButton getBtnPdf() {
+        return btnPdf;
+    }
+
 }

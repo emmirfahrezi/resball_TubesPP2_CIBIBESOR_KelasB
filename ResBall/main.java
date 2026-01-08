@@ -1,24 +1,45 @@
 package ResBall;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.swing.UIManager;
-
-import koneksiDB.KoneksiDB;
+import javax.swing.*;
+import view.viewLapangan;
 import view.viewPelanggan;
+import view.viewReservasi;
+import controller.controllerLapangan;
+import controller.controllerPelanggan;
+import controller.controllerReservasi;
 
+public class main extends JFrame {
 
-public class main {
-    public static void main(String[] args) throws SQLException {
-       // Mengatur tampilan agar terlihat modern
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {}
+    public main(){
+        setTitle("Aplikasi Sewa Lapangan");
+        setSize(900,700);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        // Jalankan View
-        java.awt.EventQueue.invokeLater(() -> {
-            new viewPelanggan().setVisible(true);
+        // TAB
+        JTabbedPane tabs = new JTabbedPane();
+
+        // ====== PELANGGAN ======
+        viewPelanggan vPelanggan = new viewPelanggan();
+        new controllerPelanggan(vPelanggan);
+        tabs.add("Pelanggan", vPelanggan.getContentPane());
+
+        // ====== LAPANGAN ======
+        viewLapangan vLapangan = new viewLapangan();
+        new controllerLapangan(vLapangan);
+        tabs.add("Lapangan", vLapangan.getContentPane());
+
+        // ====== RESERVASI ======
+        viewReservasi vReservasi = new viewReservasi();
+        new controllerReservasi(vReservasi);
+        tabs.add("Reservasi", vReservasi.getContentPane());
+
+        add(tabs);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new main().setVisible(true);
         });
     }
 }
