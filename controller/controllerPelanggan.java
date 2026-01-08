@@ -76,6 +76,11 @@ public class controllerPelanggan {
     }
     
 
+    // Validasi nomor HP hanya berupa angka
+    private boolean isValidNomorHp(String noHp) {
+        return noHp.matches("\\d+");
+    }
+
     // Mengambil input dari View dan mengirim ke Model
     public void simpanData() {
          // Validasi: Cek apakah nama, no_hp, dan tim kosong
@@ -86,16 +91,24 @@ public class controllerPelanggan {
              return;
         }
 
+        // Validasi: Nomor HP harus berupa angka
+        if (!isValidNomorHp(view.getTxtNoHp().getText())) {
+            JOptionPane.showMessageDialog(view, "Nomor HP harus berupa angka saja!");
+            view.getTxtNoHp().requestFocus();
+            return;
+        }
+
         try {
             model.insert(
                     view.getTxtNama().getText(),
                     view.getTxtNoHp().getText(),
                     view.getTxtTim().getText() // Disesuaikan dengan getter di View
             );
+            JOptionPane.showMessageDialog(view, "Data berhasil disimpan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
             tampilkanData(); // Refresh tabel
             clearForm();
         } catch (Exception e) {
-            System.out.println("Gagal Simpan: " + e.getMessage());
+            JOptionPane.showMessageDialog(view, "Gagal Simpan: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -115,6 +128,13 @@ public class controllerPelanggan {
             return;
       }
 
+        // Validasi: Nomor HP harus berupa angka
+        if (!isValidNomorHp(view.getTxtNoHp().getText())) {
+            JOptionPane.showMessageDialog(view, "Nomor HP harus berupa angka saja!");
+            view.getTxtNoHp().requestFocus();
+            return;
+        }
+
         try {
             // Ambil ID dari textfield yang hidden/disable
             int id = Integer.parseInt(view.getTxtId().getText());
@@ -127,10 +147,11 @@ public class controllerPelanggan {
                 view.getTxtTim().getText()
             );
 
+            JOptionPane.showMessageDialog(view, "Data berhasil diedit!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
             tampilkanData(); // Refresh tabel
             clearForm();     // Bersihkan form
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage());
+            JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

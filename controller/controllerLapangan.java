@@ -61,16 +61,17 @@ public class controllerLapangan {
 
                 model.insert(nama, jenis, harga, status);
 
+                JOptionPane.showMessageDialog(view, "Data berhasil disimpan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 tampilkanData();
                 clearForm();
             } catch (NumberFormatException nfe) {
-                JOptionPane.showMessageDialog(view, "Harga harus berupa angka yang valid.");
+                JOptionPane.showMessageDialog(view, "Harga harus berupa angka yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
                 view.getTxtHargaSewa().requestFocus();
             } catch (IllegalArgumentException iae) {
-                JOptionPane.showMessageDialog(view, "Status tidak valid.");
+                JOptionPane.showMessageDialog(view, "Status tidak valid.", "Error", JOptionPane.ERROR_MESSAGE);
                 view.getCbStatus().requestFocus();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(view, "Gagal Simpan: " + ex.getMessage());
+                JOptionPane.showMessageDialog(view, "Gagal Simpan: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -172,13 +173,13 @@ public class controllerLapangan {
 
             model.update(id, nama, jenis, harga, status);
 
+            JOptionPane.showMessageDialog(view, "Data berhasil diedit!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
             tampilkanData();
             clearForm();
-            JOptionPane.showMessageDialog(view, "Data Berhasil Diubah!");
         } catch (NumberFormatException nfe) {
-            JOptionPane.showMessageDialog(view, "ID dan Harga harus berupa angka yang valid.");
+            JOptionPane.showMessageDialog(view, "ID dan Harga harus berupa angka yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage());
+            JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
