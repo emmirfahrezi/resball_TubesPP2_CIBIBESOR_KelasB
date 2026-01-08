@@ -34,12 +34,13 @@ public class Pelanggan {
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, nama);
         ResultSet rs = ps.executeQuery();
-        
+
         if (rs.next()) {
             return rs.getInt("id_pelanggan");
         }
         return 0;
     }
+
     // ================= DELETE =================
     // Method untuk menghapus data pelanggan berdasarkan ID
     public void deleteById(int id) throws Exception {
@@ -49,8 +50,8 @@ public class Pelanggan {
         ps.setInt(1, id);
         ps.executeUpdate();
     }
-    
-    // ================= UPDATE  =================
+
+    // ================= UPDATE =================
     public void update(int id, String nama, String noHp, String namaTim) throws Exception {
         String sql = "UPDATE pelanggan SET nama=?, no_hp=?, nama_tim=? WHERE id_pelanggan=?";
         Connection conn = koneksiDB.configDB();
@@ -61,6 +62,13 @@ public class Pelanggan {
         ps.setInt(4, id);
         ps.executeUpdate();
     }
-    // ... method update dan delete tetap sama seperti kode sebelumnya
+
+    public ResultSet cariByNama(String keyword) throws Exception {
+        Connection conn = koneksiDB.configDB();
+        String sql = "SELECT * FROM pelanggan WHERE nama LIKE ? ORDER BY id_pelanggan ASC";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, "%" + keyword + "%");
+        return ps.executeQuery();
+    }
 
 }

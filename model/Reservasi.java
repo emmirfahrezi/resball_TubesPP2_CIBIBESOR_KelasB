@@ -57,4 +57,19 @@ public class Reservasi {
         ps.setInt(1, idRes);
         return ps.executeUpdate() > 0;
     }
+
+    // cari
+    public ResultSet cariById(int id) throws SQLException {
+        Connection conn = koneksiDB.configDB();
+        String sql = "SELECT r.id_booking, r.tanggal, r.jam_mulai, r.jam_selesai, r.total_bayar, " +
+                "p.nama AS nama_pelanggan, l.nama_lapangan " +
+                "FROM reservasi r " +
+                "JOIN pelanggan p ON r.id_pelanggan = p.id_pelanggan " +
+                "JOIN lapangan l ON r.id_lapangan = l.id_lapangan " +
+                "WHERE r.id_booking = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        return ps.executeQuery();
+    }
+
 }

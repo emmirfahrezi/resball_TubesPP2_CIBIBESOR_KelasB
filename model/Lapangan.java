@@ -23,7 +23,6 @@ public class Lapangan {
         return stmt.executeQuery(sql);
     }
 
-
     // Tambahkan ini di dalam class Lapangan
     public ResultSet getById(int id) throws Exception {
         Connection conn = koneksiDB.configDB();
@@ -34,6 +33,7 @@ public class Lapangan {
         return ps.executeQuery();
 
     }
+
     // simpan data
     public void insert(String nama, String jenis, int harga, Status status) throws Exception {
         Connection conn = koneksiDB.configDB();
@@ -71,6 +71,15 @@ public class Lapangan {
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, id);
         ps.executeUpdate();
+    }
+
+    // cari
+    public ResultSet cariByNama(String keyword) throws Exception {
+        Connection conn = koneksiDB.configDB();
+        String sql = "SELECT * FROM lapangan WHERE nama_lapangan LIKE ? ORDER BY id_lapangan ASC";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, "%" + keyword + "%");
+        return ps.executeQuery();
     }
 
 }
