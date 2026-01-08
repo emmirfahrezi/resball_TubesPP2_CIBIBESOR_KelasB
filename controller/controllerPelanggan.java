@@ -12,7 +12,6 @@ import com.itextpdf.text.pdf.*;
 
 import java.io.FileOutputStream;
 
-
 public class controllerPelanggan {
     private Pelanggan model;
     private viewPelanggan view;
@@ -28,7 +27,7 @@ public class controllerPelanggan {
         this.view.getBtnEdit().addActionListener(e -> ubahData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
         this.view.getBtnPdf().addActionListener(e -> cetakPdf());
-
+        this.view.getBtnCari().addActionListener(e -> cariData());
 
         this.view.getTablePelanggan().addMouseListener(new MouseAdapter() {
             @Override
@@ -65,7 +64,7 @@ public class controllerPelanggan {
 
     private void pilihBaris() {
         int row = view.getTablePelanggan().getSelectedRow();
-        
+
         if (row != -1) {
             // Ambil data dari tabel, masukin ke textfield
             view.getTxtId().setText(view.getTablePelanggan().getValueAt(row, 1).toString());
@@ -74,7 +73,6 @@ public class controllerPelanggan {
             view.getTxtTim().setText(view.getTablePelanggan().getValueAt(row, 4).toString());
         }
     }
-    
 
     // Validasi nomor HP hanya berupa angka
     private boolean isValidNomorHp(String noHp) {
@@ -83,12 +81,12 @@ public class controllerPelanggan {
 
     // Mengambil input dari View dan mengirim ke Model
     public void simpanData() {
-         // Validasi: Cek apakah nama, no_hp, dan tim kosong
-         if (view.getTxtNama().getText().isEmpty() || 
-             view.getTxtNoHp().getText().isEmpty() || 
-             view.getTxtTim().getText().isEmpty()) {
-                JOptionPane.showMessageDialog(view, "Semua field harus diisi!");
-             return;
+        // Validasi: Cek apakah nama, no_hp, dan tim kosong
+        if (view.getTxtNama().getText().isEmpty() ||
+                view.getTxtNoHp().getText().isEmpty() ||
+                view.getTxtTim().getText().isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Semua field harus diisi!");
+            return;
         }
 
         // Validasi: Nomor HP harus berupa angka
@@ -121,12 +119,12 @@ public class controllerPelanggan {
         }
 
         // Validasi: Cek apakah nama, no_hp, dan tim kosong
-         if (view.getTxtNama().getText().isEmpty() || 
-            view.getTxtNoHp().getText().isEmpty() || 
-            view.getTxtTim().getText().isEmpty()) {
+        if (view.getTxtNama().getText().isEmpty() ||
+                view.getTxtNoHp().getText().isEmpty() ||
+                view.getTxtTim().getText().isEmpty()) {
             JOptionPane.showMessageDialog(view, "Semua field harus diisi!");
             return;
-      }
+        }
 
         // Validasi: Nomor HP harus berupa angka
         if (!isValidNomorHp(view.getTxtNoHp().getText())) {
@@ -141,15 +139,14 @@ public class controllerPelanggan {
 
             // Panggil Model Update
             model.update(
-                id,
-                view.getTxtNama().getText(),
-                view.getTxtNoHp().getText(),
-                view.getTxtTim().getText()
-            );
+                    id,
+                    view.getTxtNama().getText(),
+                    view.getTxtNoHp().getText(),
+                    view.getTxtTim().getText());
 
             JOptionPane.showMessageDialog(view, "Data berhasil diedit!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
             tampilkanData(); // Refresh tabel
-            clearForm();     // Bersihkan form
+            clearForm(); // Bersihkan form
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -164,16 +161,14 @@ public class controllerPelanggan {
         }
 
         int confirm = JOptionPane.showConfirmDialog(
-            view,
-            "Yakin hapus data?",
-            "Konfirmasi",
-            JOptionPane.YES_NO_OPTION
-        );
+                view,
+                "Yakin hapus data?",
+                "Konfirmasi",
+                JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             int id = Integer.parseInt(
-                view.getTablePelanggan().getValueAt(row, 1).toString()
-            );
+                    view.getTablePelanggan().getValueAt(row, 1).toString());
 
             try {
                 model.deleteById(id);
@@ -233,13 +228,41 @@ public class controllerPelanggan {
     }
 
     private void addCellHeader(PdfPTable table, String text) {
-    Font font = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
-    PdfPCell cell = new PdfPCell(new Phrase(text, font));
-    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-    cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
-    table.addCell(cell);
-}
+        Font font = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+        table.addCell(cell);
+    }
 
+    private void cariData() {
+        String keyword = view.getTxtCari().getText().trim();
 
-    
+        DefaultTableModel tbl = (DefaultTableModel) view.getTablePelanggan().getModel();
+        tbl.setRowCount(0);
+
+        try {
+            ResultSet rs;
+
+            if (keyword.isEmpty()) {
+                rs = model.getAll(); // kalau kosong, tampilkan semua
+            } else {
+                rs = model.cariByNama(keyword);
+            }
+
+            int no = 1;
+            while (rs.next()) {
+                tbl.addRow(new Object[] {
+                        no++,
+                        rs.getString("id_pelanggan"),
+                        rs.getString("nama"),
+                        rs.getString("no_hp"),
+                        rs.getString("nama_tim")
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Gagal cari data");
+        }
+    }
+
 }

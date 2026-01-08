@@ -25,7 +25,7 @@ public class controllerLapangan {
         this.view.getBtnClear().addActionListener(e -> clearForm());
 
         this.view.getBtnHapus().addActionListener(e -> hapusData());
-
+        this.view.getBtnCari().addActionListener(e -> cariData());
 
         this.view.getTableLapangan().addMouseListener(new MouseAdapter() {
             @Override
@@ -43,14 +43,15 @@ public class controllerLapangan {
         view.getBtnSimpan().addActionListener(e -> {
 
             // validasi sebelum simpan
-            if (!validateBeforeSave()) return; // Hentikan proses simpan jika validasi gagal
-            
+            if (!validateBeforeSave())
+                return; // Hentikan proses simpan jika validasi gagal
+
             try {
                 String nama = view.getTxtNamaLapangan().getText();
                 String jenis = view.getTxtJenisLapangan().getText();
                 int harga = Integer.parseInt(view.getTxtHargaSewa().getText());
 
-                //validasi sttus harus di isi
+                // validasi sttus harus di isi
                 Object statusObj = view.getCbStatus().getSelectedItem();
                 if (statusObj == null) {
                     JOptionPane.showMessageDialog(view, "Status harus dipilih.");
@@ -61,17 +62,20 @@ public class controllerLapangan {
 
                 model.insert(nama, jenis, harga, status);
 
-                JOptionPane.showMessageDialog(view, "Data berhasil disimpan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Data berhasil disimpan!", "Sukses",
+                        JOptionPane.INFORMATION_MESSAGE);
                 tampilkanData();
                 clearForm();
             } catch (NumberFormatException nfe) {
-                JOptionPane.showMessageDialog(view, "Harga harus berupa angka yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Harga harus berupa angka yang valid.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 view.getTxtHargaSewa().requestFocus();
             } catch (IllegalArgumentException iae) {
                 JOptionPane.showMessageDialog(view, "Status tidak valid.", "Error", JOptionPane.ERROR_MESSAGE);
                 view.getCbStatus().requestFocus();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(view, "Gagal Simpan: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Gagal Simpan: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -104,7 +108,7 @@ public class controllerLapangan {
                 .addListSelectionListener(e -> {
 
                     if (e.getValueIsAdjusting())
-                        return; // 
+                        return; //
 
                     int row = view.getTableLapangan().getSelectedRow();
                     if (row != -1) {
@@ -162,7 +166,8 @@ public class controllerLapangan {
         }
 
         // Validasi sebelum ubah
-        if (!validateBeforeUpdate()) return; // Hentikan proses ubah jika validasi gagal
+        if (!validateBeforeUpdate())
+            return; // Hentikan proses ubah jika validasi gagal
 
         try {
             int id = Integer.parseInt(view.getTxtId().getText());
@@ -177,7 +182,8 @@ public class controllerLapangan {
             tampilkanData();
             clearForm();
         } catch (NumberFormatException nfe) {
-            JOptionPane.showMessageDialog(view, "ID dan Harga harus berupa angka yang valid.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(view, "ID dan Harga harus berupa angka yang valid.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view, "Gagal Ubah: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -197,18 +203,16 @@ public class controllerLapangan {
                 view,
                 "Yakin ingin menghapus data lapangan?",
                 "Konfirmasi",
-                JOptionPane.YES_NO_OPTION
-        );
+                JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
                 int id = Integer.parseInt(
                         view.getTableLapangan()
                                 .getValueAt(row, 0)
-                                .toString()
-                );
+                                .toString());
 
-                model.deleteById(id);   // <<< INTI FITUR HAPUS
+                model.deleteById(id); // <<< INTI FITUR HAPUS
                 tampilkanData();
                 clearForm();
 
@@ -327,20 +331,26 @@ public class controllerLapangan {
         try {
             AbstractDocument docHarga = (AbstractDocument) view.getTxtHargaSewa().getDocument();
             docHarga.setDocumentFilter(new NumericFilter(9));
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     // Filter dokumen untuk angka saja
     private static class NumericFilter extends DocumentFilter {
         private final int maxLen;
-        NumericFilter(int maxLen) { this.maxLen = maxLen; }
+
+        NumericFilter(int maxLen) {
+            this.maxLen = maxLen;
+        }
 
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
                 throws BadLocationException {
-            if (string == null) return;
+            if (string == null)
+                return;
             String filtered = string.replaceAll("\\D", "");
-            if (filtered.isEmpty()) return;
+            if (filtered.isEmpty())
+                return;
 
             int newLen = fb.getDocument().getLength() + filtered.length();
             if (newLen <= maxLen) {
@@ -351,7 +361,8 @@ public class controllerLapangan {
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
                 throws BadLocationException {
-            if (text == null) return;
+            if (text == null)
+                return;
             String filtered = text.replaceAll("\\D", "");
             int currentLen = fb.getDocument().getLength();
             int newLen = currentLen - length + filtered.length();
@@ -360,6 +371,31 @@ public class controllerLapangan {
             } else if (newLen <= maxLen) {
                 super.replace(fb, offset, length, filtered, attrs);
             }
+        }
+    }
+
+    // cari
+    private void cariData() {
+        String keyword = view.getTxtCari().getText().trim();
+        DefaultTableModel tbl = (DefaultTableModel) view.getTableLapangan().getModel();
+        tbl.setRowCount(0);
+
+        try {
+            ResultSet rs = keyword.isEmpty()
+                    ? model.getAll()
+                    : model.cariByNama(keyword);
+
+            while (rs.next()) {
+                tbl.addRow(new Object[] {
+                        rs.getString("id_lapangan"),
+                        rs.getString("nama_lapangan"),
+                        rs.getString("jenis"),
+                        rs.getString("harga_per_jam"),
+                        rs.getString("status")
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Gagal cari lapangan");
         }
     }
 

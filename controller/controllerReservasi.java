@@ -38,6 +38,8 @@ public class controllerReservasi {
         // ================= [TETAP] BUTTON =================
         this.view.getBtnSimpan().addActionListener(e -> simpanData());
         this.view.getBtnClear().addActionListener(e -> clearForm());
+        this.view.getBtnCari().addActionListener(e -> cariData());
+
         if (this.view.getBtnPdf() != null) {
             this.view.getBtnPdf().addActionListener(e -> cetakPdf());
         }
@@ -149,7 +151,7 @@ public class controllerReservasi {
             while (rs.next()) {
                 tbl.addRow(new Object[] {
                         rs.getInt("id_booking"),
-                        rs.getString("nama_pelanggan"), 
+                        rs.getString("nama_pelanggan"),
                         rs.getString("nama_lapangan"),
                         rs.getDate("tanggal"),
                         rs.getTime("jam_mulai"),
@@ -278,8 +280,7 @@ public class controllerReservasi {
                 view,
                 "Yakin ingin menghapus reservasi?",
                 "Konfirmasi",
-                JOptionPane.YES_NO_OPTION
-        );
+                JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             try {
@@ -346,4 +347,36 @@ public class controllerReservasi {
             JOptionPane.showMessageDialog(view, "Gagal membuat PDF: " + e.getMessage());
         }
     }
+
+    // cari
+    private void cariData() {
+        String keyword = view.getTxtCari().getText().trim();
+        DefaultTableModel tbl = (DefaultTableModel) view.getTableReservasi().getModel();
+        tbl.setRowCount(0);
+
+        try {
+            ResultSet rs;
+
+            if (keyword.isEmpty()) {
+                rs = modelReservasi.getAll();
+            } else {
+                rs = modelReservasi.cariById(Integer.parseInt(keyword));
+            }
+
+            while (rs.next()) {
+                tbl.addRow(new Object[] {
+                        rs.getInt("id_booking"),
+                        rs.getString("nama_pelanggan"),
+                        rs.getString("nama_lapangan"),
+                        rs.getDate("tanggal"),
+                        rs.getTime("jam_mulai"),
+                        rs.getTime("jam_selesai"),
+                        rs.getInt("total_bayar")
+                });
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "ID harus angka!");
+        }
+    }
+
 }
