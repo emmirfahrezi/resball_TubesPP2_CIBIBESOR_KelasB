@@ -39,7 +39,7 @@ public class viewLapangan extends JFrame {
         //
         cbStatus = new JComboBox<>(new String[] {
                 "TERSEDIA",
-                "TIDAK TERSEDIA"
+                "TIDAK_TERSEDIA"
         });
 
         panelForm.add(new JLabel("Nama Lapangan"));

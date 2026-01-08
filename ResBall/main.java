@@ -1,39 +1,45 @@
 package ResBall;
 
-import javax.swing.UIManager;
-import javax.swing.text.View;
-
-import controller.controllerLapangan;
-import controller.controllerPelanggan;
-import controller.controllerReservasi;
+import javax.swing.*;
 import view.viewLapangan;
 import view.viewPelanggan;
 import view.viewReservasi;
+import controller.controllerLapangan;
+import controller.controllerPelanggan;
+import controller.controllerReservasi;
 
-public class main {
+public class main extends JFrame {
+
+    public main(){
+        setTitle("Aplikasi Sewa Lapangan");
+        setSize(900,700);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // TAB
+        JTabbedPane tabs = new JTabbedPane();
+
+        // ====== PELANGGAN ======
+        viewPelanggan vPelanggan = new viewPelanggan();
+        new controllerPelanggan(vPelanggan);
+        tabs.add("Pelanggan", vPelanggan.getContentPane());
+
+        // ====== LAPANGAN ======
+        viewLapangan vLapangan = new viewLapangan();
+        new controllerLapangan(vLapangan);
+        tabs.add("Lapangan", vLapangan.getContentPane());
+
+        // ====== RESERVASI ======
+        viewReservasi vReservasi = new viewReservasi();
+        new controllerReservasi(vReservasi);
+        tabs.add("Reservasi", vReservasi.getContentPane());
+
+        add(tabs);
+    }
+
     public static void main(String[] args) {
-
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-        }
-
-        java.awt.EventQueue.invokeLater(() -> {
-            viewPelanggan view = new viewPelanggan();
-            new controllerPelanggan(view);
-            view.setVisible(true);
-
-            // Menampilkan View Lapangan
-            viewLapangan vLapangan = new viewLapangan(); // Pastikan nama kelasnya sesuai
-            new controllerLapangan(vLapangan); // Pastikan controllernya juga ada
-            vLapangan.setVisible(true);
-
-            // menampilkan View Reservasi
-            viewReservasi vReservasi = new viewReservasi();
-            new controllerReservasi(vReservasi);
-            vReservasi.setVisible(true);
-
+        SwingUtilities.invokeLater(() -> {
+            new main().setVisible(true);
         });
-
     }
 }
